@@ -1,38 +1,53 @@
 package com.premise.githubeventsapi;
 
-import android.os.Bundle;
+import java.util.List;
+
+import org.json.JSONArray;
+
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
 
 public class MainActivity extends Activity {
+
+	private static final String URI = "https://api.github.com/events";
+
+	private ResultsParser resultsParser = new ResultsParser(this);
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
-		displayPublicEventList();
+
+		retrieveGitHubPublicEventList();
 	}
 
-	private void displayPublicEventList() {
+	private void retrieveGitHubPublicEventList() {
+		AQuery aq = new AQuery(getApplicationContext());
+		aq.ajax(URI, JSONArray.class, this, "processResponse");
+	}
+
+	public void processResponse(String url, JSONArray json, AjaxStatus status) {
+		if (json != null) {
+			List<String> publicEvents = resultsParser.fromJsonArrayToStringList(json);
+			this.displayContent(publicEvents);
+		} else {
+			Log.e("json response is null", status.getError());
+			Toast.makeText(this, "unable to process events from Git Hub", Toast.LENGTH_LONG).show();
+		}
+	}
+
+	public void displayContent(List<String> publicEvents) {
 		ListView eventList = (ListView) findViewById(R.id.eventsList);
-		String[] publicEvents= getEventsFromGithub();
-		ArrayAdapter<String> menuListAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, publicEvents );
+
+		ArrayAdapter<String> menuListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+				publicEvents);
 		eventList.setAdapter(menuListAdapter);
 	}
-
-	private String[] getEventsFromGithub() {
-		return new String[] { "Event 1", "Event2", "Event3" };
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
 }
