@@ -7,7 +7,6 @@ import org.json.JSONArray;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ public class MainActivity extends Activity {
 
 	public void processResponse(String url, JSONArray json, AjaxStatus status) {
 		if (json != null) {
-			List<String> publicEvents = resultsParser.fromJsonArrayToStringList(json);
+			List<Event> publicEvents = resultsParser.fromJsonArrayToStringList(json);
 			this.displayContent(publicEvents);
 		} else {
 			Log.e("json response is null", status.getError());
@@ -43,11 +42,10 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	public void displayContent(List<String> publicEvents) {
+	public void displayContent(List<Event> publicEvents) {
 		ListView eventList = (ListView) findViewById(R.id.eventsList);
 
-		ArrayAdapter<String> menuListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-				publicEvents);
-		eventList.setAdapter(menuListAdapter);
+		EventListAdapter eventListAdapter = new EventListAdapter(this, R.layout.event, publicEvents);
+		eventList.setAdapter(eventListAdapter);
 	}
 }

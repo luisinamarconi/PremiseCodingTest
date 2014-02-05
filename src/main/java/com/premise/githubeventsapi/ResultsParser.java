@@ -19,8 +19,8 @@ public class ResultsParser {
 		this.context = context;
 	}
 
-	public List<String> fromJsonArrayToStringList(JSONArray jsonArray) {
-		List<String> results = new ArrayList<String>();
+	public List<Event> fromJsonArrayToStringList(JSONArray jsonArray) {
+		List<Event> results = new ArrayList<Event>();
 		
 		if (jsonArray != null) {
 			try {
@@ -30,7 +30,7 @@ public class ResultsParser {
 					String id = currentElement.getString("id");
 					String type = currentElement.getString("type");
 					String createdAt = currentElement.getString("created_at");
-					results.add(String.format("[%s] [%s] at %s", id, type, createdAt));
+					results.add(new Event(id, type, createdAt));
 				}
 			} catch (JSONException ex) {
 				final String msg = "Unexpected error when parsing JSON response";
