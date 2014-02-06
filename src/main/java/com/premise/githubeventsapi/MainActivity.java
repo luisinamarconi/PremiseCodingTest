@@ -30,10 +30,6 @@ public class MainActivity extends Activity {
 
 		EventsRetriever eventsRetriever = new EventsRetriever();
 		eventsRetriever.execute(new String[] { URI });
-		/*
-		 * AQuery aq = new AQuery(getApplicationContext()); aq.ajax(URI,
-		 * JSONArray.class, this, "processResponse");
-		 */
 	}
 
 	public void processResponse(JSONArray json) {

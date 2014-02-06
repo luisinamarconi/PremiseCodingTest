@@ -17,22 +17,28 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View row = convertView;
+		EventViewHolder viewHolder;
 
-		if (row == null) {
+		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(
 					Context.LAYOUT_INFLATER_SERVICE);
-			row = inflater.inflate(R.layout.event, parent, false);
+			convertView = inflater.inflate(R.layout.event, parent, false);
+
+			viewHolder = new EventViewHolder();
+			viewHolder.setEventId((TextView) convertView.findViewById(R.id.eventId));
+			viewHolder.setEventType((TextView) convertView.findViewById(R.id.eventType));
+			viewHolder.setEventCreatedAt((TextView) convertView.findViewById(R.id.eventCreatedAt));
+			convertView.setTag(viewHolder);
+
+		} else {
+			viewHolder = (EventViewHolder) convertView.getTag();
 		}
 
-		TextView eventId = (TextView) row.findViewById(R.id.eventId);
-		TextView eventType = (TextView) row.findViewById(R.id.eventType);
-		TextView eventCreatedAt = (TextView) row.findViewById(R.id.eventCreatedAt);
 		Event event = this.getItem(position);
-		eventId.setText(event.getId());
-		eventType.setText(event.getType());
-		eventCreatedAt.setText(event.getCreatedAt());
+		viewHolder.getEventId().setText(event.getId());
+		viewHolder.getEventType().setText(event.getType());
+		viewHolder.getEventCreatedAt().setText(event.getCreatedAt());
 
-		return row;
+		return convertView;
 	}
 }
